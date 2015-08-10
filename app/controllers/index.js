@@ -1,6 +1,5 @@
 var validator = require('validator');
 var hbs = require('nodemailer-express-handlebars');
-var flash = require('connect-flash');
 var moment = require('moment');
 var crypto = require('crypto');
 var path = require('path');
@@ -12,17 +11,17 @@ var resetForm = require('../forms/resetPassword');
 var form = require('../forms/signup');
 
 exports.getHome = function(req, res, next) {
-      res.render('index.html', { title: config.app.name });
+      res.render('front/index.html', { title: config.app.name });
 };
 exports.getLogin = function(req, res, next) {
-      res.render('login.html', { title: config.app.name+' - Login' });
+      res.render('front/login.html', { title: config.app.name+' - Login' });
 };
 exports.postLogin = function(req,res) {
       res.redirect("/");
 };
 exports.getSignup = function(req, res, next) {
       var name = req.query.type;
-      res.render('signup.html', { title: config.app.name+' - Signup', type : name, signupForm: form.signup_form });
+      res.render('front/signup.html', { title: config.app.name+' - Signup', type : name, signupForm: form.signup_form });
 };
 exports.postSignup = function(req,res) {
       var data = req.body;
@@ -59,7 +58,7 @@ exports.postSignup = function(req,res) {
                 // req.flash("formData", data);
                 req.flash('errors', errors);
                 // res.redirect('back');
-                res.render('signup.html', { title: config.app.name+' - Signup', signupForm: form });
+                res.render('front/signup.html', { title: config.app.name+' - Signup', signupForm: form });
            },
            empty: function (form) {
                 console.log("empty\n");
@@ -72,7 +71,7 @@ exports.getSignout = function(req, res) {
       res.redirect('/');
 };
 exports.forgotPassword = function(req, res) {
-      res.render('forgotPassword.html', { title: 'Forgot Password', message: req.flash('message') });
+      res.render('front/forgotPassword.html', { title: 'Forgot Password', message: req.flash('message') });
 };
 exports.forgotPasswordEmail = function(req, res) {
       var transporter = config.mail.nodemail;
@@ -114,7 +113,7 @@ exports.resetPassword = function(req, res) {
       db.user.find({ where: { forgotPasswordToken: token } }).success(function(user) {  
            if (user) {
                 if(moment() <= moment(user.forgotPasswordReqTime)) {
-                     res.render('resetPassword.html', { title: 'Reset Password', resetPasswordForm: resetForm.resetPassword });
+                     res.render('front/resetPassword.html', { title: 'Reset Password', resetPasswordForm: resetForm.resetPassword });
                 } else {
                      user.forgotPasswordToken = null;
                      user.save().success(function() {
@@ -217,7 +216,7 @@ exports.getMail = function(req,res) {
       res.redirect('/');
 };
 exports.getFile = function(req, res, next) {
-      res.render('file.html', { title: config.app.name+' - File Upload'});
+      res.render('front/file.html', { title: config.app.name+' - File Upload'});
 };
 exports.postFile = function(req, res, next) {
       var upload = path.join(__dirname, '../../public/uploads/');

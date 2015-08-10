@@ -3,7 +3,7 @@ var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-var flash = require('connect-flash');
+var flash = require('express-flash');
 var expressSession = require('express-session');
 var errorhandler = require('errorhandler');
 var passport = require('./passport');
@@ -12,17 +12,22 @@ var admin = require('../routes/admin');
 var auth = require('../routes/auth');
 var users = require('../routes/users');
 module.exports = function(app, express) {
-	nunjucks.configure('views', { autoescape: true, express: app });
-	app.set('views', path.join(__dirname, '../../views'));
+	// view config
+	app.set('views', path.join(__dirname, '../views'));
+	nunjucks.configure(app.get('views'), { autoescape: true, express: app });
 	app.set('view engine', 'html');
+
 	app.use(logger('dev'));
 	app.use(bodyParser.json());
+	// upload dir
 	app.use(bodyParser.urlencoded({
 		extended: true,
 		uploadDir: '../../public/uploads'
 	}));
 	app.use(cookieParser());
+	// resource path
 	app.use(express.static(path.join(__dirname, '../../public')));
+	// session config
 	app.use(expressSession({ secret: 'naveen', proxy: true, resave: true, saveUninitialized: true, cookie: { maxAge: 60000 }}));
 	app.use(flash());
 	app.use(passport.initialize());
@@ -40,9 +45,8 @@ module.exports = function(app, express) {
 		var err = new Error('Not Found');
 		err.status = 404;
 		next(err);
-	});// error handlers
-
-	app.use(errorhandler({log: errorNotification}));
+	}); // error handlers
+	app.use(errorhandler({ log: errorNotification }));
 	function errorNotification(err, str, req) {
 		var title = 'Error in ' + req.method + ' ' + req.url;
 		console.log(title+"\n"+str);

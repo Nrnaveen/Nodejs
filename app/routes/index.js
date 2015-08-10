@@ -2,7 +2,6 @@ var express = require('express');
 var index = require('../controllers/index');
 var passport = require('../config/passport');
 var authorization = require('../config/authorization');
-var flash = require('connect-flash');
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
 

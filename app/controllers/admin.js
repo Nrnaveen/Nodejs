@@ -2,7 +2,6 @@ var underscore = require('underscore');
 var nodemailer = require('nodemailer');
 var validator = require('validator');
 var hbs = require('nodemailer-express-handlebars');
-var flash = require('connect-flash');
 var moment = require('moment');
 var crypto = require('crypto');
 var config = require("../config/config");

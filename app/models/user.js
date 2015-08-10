@@ -66,7 +66,10 @@ module.exports = function(sequelize, DataTypes) {
                 defaultValue: '1'
            },
            role: {
-                type: DataTypes.STRING,
+                // type: DataTypes.STRING,
+                // defaultValue: 'user',
+                type: DataTypes.ENUM,
+                values: ['admin', 'user'],
                 defaultValue: 'user',
            },
            facebookId: {
