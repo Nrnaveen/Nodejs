@@ -75,7 +75,12 @@ module.exports = function(sequelize, DataTypes) {
            facebookId: {
                 type: DataTypes.STRING,
                 allowNull: null,
-           }
+           },
+           image: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                validate: {notEmpty: true}
+           },
       }, {
            instanceMethods: {
                 authenticate: function(password){

@@ -6,15 +6,25 @@ var cookieParser = require('cookie-parser');
 var flash = require('express-flash');
 var expressSession = require('express-session');
 var errorhandler = require('errorhandler');
+var redis = require('redis');
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
+var dateFilter = require('nunjucks-date-filter');
+var nunjucksDate = require('nunjucks-date');
 var passport = require('./passport');
 var routes = require('../routes/index');
 var admin = require('../routes/admin');
 var auth = require('../routes/auth');
 var users = require('../routes/users');
 module.exports = function(app, express) {
+	var SECRET_KEY = 'Naveenr7+^!-xf)i1agch=^g_0%svl++wjo=z3x!gn%nq7+5mv7m_3h^Naveen';
+	var client = redis.createClient();
 	// view config
+	nunjucksDate.setDefaultFormat('MMMM Do YYYY, h:mm:ss a');
 	app.set('views', path.join(__dirname, '../views'));
-	nunjucks.configure(app.get('views'), { autoescape: true, express: app });
+	var env = nunjucks.configure(app.get('views'), { autoescape: true, express: app });
+	env.addFilter('date', dateFilter);
+	nunjucksDate.install(env);
 	app.set('view engine', 'html');
 
 	app.use(logger('dev'));
@@ -28,15 +38,15 @@ module.exports = function(app, express) {
 	// resource path
 	app.use(express.static(path.join(__dirname, '../../public')));
 	// session config
-	app.use(expressSession({ secret: 'naveen', proxy: true, resave: true, saveUninitialized: true, cookie: { maxAge: 60000 }}));
+	app.use(session({
+		secret: SECRET_KEY,
+		store: new RedisStore({ host: 'localhost', port: 6379, client: client }),
+		proxy: true, resave: true, saveUninitialized: true,
+	}));
 	app.use(flash());
 	app.use(passport.initialize());
 	app.use(passport.session());
 	app.use(function (req, res, next) {
-		res.locals.message = req.flash('message');
-		res.locals.error = req.flash('error');
-		res.locals.errors = req.flash('errors');
-		res.locals.formData = req.flash('formData');
 		res.locals.user = req.user;
 		next();
 	});

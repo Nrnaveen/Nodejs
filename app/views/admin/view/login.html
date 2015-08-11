@@ -1,0 +1,22 @@
+{% extends 'admin/layout/_blank_layout.html' %}
+{% block class %}
+      bg-black
+{% endblock %}
+{% block content %}
+	<div class="form-box" id="login-box">
+           <div class="header">Sign In</div>
+           <form method="post">
+                <div class="body bg-gray">
+                     <div class="form-group">
+                           <input type="text" name="email" class="form-control" placeholder="email@domain.com" required />
+                     </div>
+                     <div class="form-group">
+                           <input type="password" name="password" class="form-control" pattern=".{8,25}" required title="8 to 25 characters" placeholder="password">
+                     </div>
+                </div>
+                <div class="footer">
+                     <button type="submit" class="btn bg-olive btn-block">Sign me in</button>
+                </div>
+           </form>
+     </div>
+{% endblock %}

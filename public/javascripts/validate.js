@@ -25,4 +25,16 @@ $(document).ready(function() {
 			confirm:{ required: "Please Enter Confirm Password Field", minlength: "Your Conform Password Must be Atleast 8 Characters Long", equalTo: "Password and Conform Password does not Match", },
 		},
 	});
+	$("#profile").validate({
+		rules:{
+			firstname: 'required',
+			lastname: 'required',
+			image: { extension: "jpg|JPEG|jpeg|png", },
+		},
+		messages:{
+			firstname: 'Please Enter First Name Field',
+			lastname: 'Please Enter Last Name Field',
+			image: { extension: "Please upload image only with extension (jpg|JPEG|jpeg|png)", },
+		},
+	});
 });
