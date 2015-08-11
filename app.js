@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
+
 require('./app/config/express')(app, express);
+
 if (app.get('env') === 'development') {
       app.use(function(err, req, res, next) {
            res.status(err.status || 500);

@@ -10,32 +10,39 @@ var router = express.Router();
 // GET home page
 router.get('/', index.getHome);
 // login route
-router.route('/login').get(authorization.requiresNotLogin, index.getLogin)
+router.route('/login')
+	.get(authorization.requiresNotLogin, index.getLogin)
 	.post(passport.authenticate('local', {
 		failureRedirect: '/login',
 		failureFlash: 'Invalid username or password.',
 	}), index.postLogin);
 // signup route
-router.route('/signup').get(authorization.requiresNotLogin, index.getSignup)
+router.route('/signup')
+	.get(authorization.requiresNotLogin, index.getSignup)
 	.post(index.postSignup);
 // logout route
 router.route('/logout').get(index.getSignout);
 // forgot password
-router.route('/forgotpasswd').get(authorization.requiresNotLogin, index.forgotPassword)
+router.route('/forgotpasswd')
+	.get(authorization.requiresNotLogin, index.forgotPassword)
 	.post(authorization.requiresNotLogin, index.forgotPasswordEmail);
 // reset password
-router.route('/resetpasswd/:token').get(authorization.requiresNotLogin, index.resetPassword)
+router.route('/resetpasswd/:token')
+	.get(authorization.requiresNotLogin, index.resetPassword)
 	.post(authorization.requiresNotLogin, index.updateUserPassword);
 
-router.route('/changepwd').get(authorization.requiresLogin, index.getChangepwd)
+router.route('/changepwd')
+	.get(authorization.requiresLogin, index.getChangepwd)
 	.post(authorization.requiresLogin, index.postChangepwd);
 
 router.route('/redirect').get(index.getRedirect);
 
-router.route('/file').get(authorization.requiresLogin, index.getFile)
+router.route('/file')
+	.get(authorization.requiresLogin, index.getFile)
 	.post(authorization.requiresLogin, multipartMiddleware, index.postFile);
 
 router.route('/download').get(index.getDownload);
+
 router.route('/mail').get(index.getMail);
 
 // Setting the google oauth routes

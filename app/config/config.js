@@ -19,7 +19,7 @@ module.exports = {
                 }
            }),
            options: {
-                viewPath: 'views/emails/',
+                viewPath: path.normalize(__dirname + '/../views/emails/'),
                 extName: '.html'
            },
       },

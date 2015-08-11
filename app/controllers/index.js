@@ -163,7 +163,7 @@ exports.updateUserPassword = function(req, res) {
       });
 };
 exports.getChangepwd = function(req, res) {
-      res.render('resetPassword.html', { title: 'Reset Password', resetPasswordForm: resetForm.resetPassword });
+      res.render('front/resetPassword.html', { title: 'Reset Password', resetPasswordForm: resetForm.resetPassword });
 };
 exports.postChangepwd = function(req, res) {
       var data = req.body;
