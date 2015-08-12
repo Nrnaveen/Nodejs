@@ -9,10 +9,15 @@ var gm = require('gm').subClass({ imageMagick: true });
 var path = require('path');
 var config = require("../config/config");
 var resetForm = require('../forms/resetPassword');
+var form = require('../forms/signup');
 var db = require('../config/sequelize');
 
 exports.getAdmin = function(req, res, next) {
-	 res.render('admin/view/index.html', { title: config.app.name });
+      db.user.count({ where: { role: 'user' } }).success(function(user_count) {
+           res.render('admin/view/index.html', { title: config.app.name, user_count: user_count });
+      }).error(function(err) {
+           res.render('admin/view/index.html', { title: config.app.name, user_count: 0 });
+      });
 };
 exports.getLogin = function(req, res, next) {
 	 res.render('admin/view/login.html', { title: config.app.name+' - Login' });
@@ -193,10 +198,45 @@ exports.postChangePassword = function(req, res) {
                 req.flash('error', "User Not Found");
                 res.redirect('/admin/users');
            }
-  }).error(function(err) {
+      }).error(function(err) {
            req.flash('error', "User Not Found");
            res.redirect('/admin/users');
-  });
+      });
+};
+
+exports.getNewUser = function(req, res) {
+      return res.render('admin/view/user_new.html', { signupForm: form.signup_form });
+};
+exports.postNewUser = function(req, res) {
+      var data = req.body;
+      form.signup_form.handle(req, {
+           success: function (form) {
+                if (form.isValid()){
+                     db.user.find({ where: { email: data.email } }).success(function(user) {
+                          if(!user) {
+                                var user = db.user.build(data);
+                                user.image = 'avatar.png';
+                                user.provider = 'local';
+                                user.password = user.encryptPassword(data.password);
+                                user.save().success(function() {
+                                     req.flash("success", "You Are Successfully Registered.");
+                                     res.redirect('/admin/users');
+                                });
+                          }else{
+                                req.flash("error", "Email ID is already registered.Please Select another one");
+                                res.redirect('/admin/users');
+                          }
+                     });
+                }
+           },
+           error: function (form) {
+                req.flash('errors', form.errors);
+                res.render('admin/view/user_new.html', { signupForm: form });
+           },
+           empty: function (form) {
+                console.log("empty\n");
+           }
+      });
 };
 
 

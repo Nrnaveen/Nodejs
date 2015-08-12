@@ -59,7 +59,7 @@ exports.postSignup = function(req,res) {
                 //      }
                 // }
                 // req.flash("formData", data);
-                req.flash('errors', errors);
+                req.flash('errors', form.errors);
                 // res.redirect('back');
                 res.render('front/signup.html', { title: config.app.name+' - Signup', signupForm: form });
            },
