@@ -6,6 +6,11 @@ var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
 var router = express.Router();
 
+router.use(function (req, res, next) {
+	res.locals.user = req.user;
+	next();
+});
+
 // GET admin page
 router.route('/login')
 	.get(authorization.requiresAdminNotLogin, admin.getLogin)

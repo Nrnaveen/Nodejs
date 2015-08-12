@@ -4,11 +4,17 @@ var passport = require('../config/passport');
 var authorization = require('../config/authorization');
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
-
 var router = express.Router();
 
+router.use(function (req, res, next) {
+	if(req.isAuthenticated() && req.user.role != 'admin') {
+		res.locals.user = req.user;
+	}
+	next();
+});
+
 // GET home page
-router.get('/', authorization.requiresNotLogin, index.getHome);
+router.get('/', index.getHome);
 // login route
 router.route('/login')
 	.get(authorization.requiresNotLogin, index.getLogin)

@@ -46,10 +46,7 @@ module.exports = function(app, express) {
 	app.use(flash());
 	app.use(passport.initialize());
 	app.use(passport.session());
-	app.use(function (req, res, next) {
-		res.locals.user = req.user;
-		next();
-	});
+	
 	// routes
 	app.use('/', routes).use('/auth', auth).use('/admin', admin).use('/users', users).use(function(req, res, next) {
 		var err = new Error('Not Found');
