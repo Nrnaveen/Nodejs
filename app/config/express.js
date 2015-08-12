@@ -29,12 +29,11 @@ module.exports = function(app, express) {
 
 	app.use(logger('dev'));
 	app.use(bodyParser.json());
+
 	// upload dir
-	app.use(bodyParser.urlencoded({
-		extended: true,
-		uploadDir: '../../public/uploads'
-	}));
+	app.use(bodyParser.urlencoded({ extended: true, uploadDir: '../../public/uploads' }));
 	app.use(cookieParser());
+
 	// resource path
 	app.use(express.static(path.join(__dirname, '../../public')));
 	// session config
@@ -46,13 +45,14 @@ module.exports = function(app, express) {
 	app.use(flash());
 	app.use(passport.initialize());
 	app.use(passport.session());
-	
+
 	// routes
 	app.use('/', routes).use('/auth', auth).use('/admin', admin).use('/users', users).use(function(req, res, next) {
 		var err = new Error('Not Found');
 		err.status = 404;
 		next(err);
 	}); // error handlers
+	
 	app.use(errorhandler({ log: errorNotification }));
 	function errorNotification(err, str, req) {
 		var title = 'Error in ' + req.method + ' ' + req.url;
