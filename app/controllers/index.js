@@ -31,13 +31,16 @@ exports.postSignup = function(req,res) {
                      db.user.find({where: {email: data.email}}).success(function(user) {
                           if(!user) {
                                 var user = db.user.build(data);
+                                user.image = 'avatar.png';
                                 user.provider = 'local';
                                 user.password = user.encryptPassword(data.password);
                                 user.save().success(function() {
+                                     req.flash("success", "You Are Successfully Registered.");
                                      res.redirect('/login');
                                      // req.login(user, function(err) { if(err) { return next(err); }else{ res.redirect('/login'); } });
                                 });
                           }else{
+                                req.flash("error", "Email ID is already registered.Please Select another one");
                                 res.redirect('/signup');
                           }
                      });

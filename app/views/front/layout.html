@@ -11,6 +11,23 @@
 </head>
 <body class="index-banner">
 	{% include "front/topmenu.html" %}
+	 <div class="row">
+	 	<div class="col-lg-12">
+	 		<br />
+	 		{% if messages.success %}
+	 			<div class="alert alert-success alert-dismissable">
+	 				<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+	 				<b>Success</b> {{messages.success}}
+	 			</div>
+	 		{% endif %}
+	 		{% if messages.error %}
+	 			<div class="alert alert-danger alert-dismissable">
+	 				<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
+	 				<b>Error</b> {{messages.error}}
+	 			</div>
+	 		{% endif %}
+	 	</div>
+	 </div>
 	{% block content %}
 	{% endblock %}
 	{% block footer %}

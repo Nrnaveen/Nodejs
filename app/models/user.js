@@ -66,8 +66,6 @@ module.exports = function(sequelize, DataTypes) {
                 defaultValue: '1'
            },
            role: {
-                // type: DataTypes.STRING,
-                // defaultValue: 'user',
                 type: DataTypes.ENUM,
                 values: ['admin', 'user'],
                 defaultValue: 'user',
@@ -80,6 +78,10 @@ module.exports = function(sequelize, DataTypes) {
                 type: DataTypes.STRING,
                 allowNull: false,
                 validate: {notEmpty: true}
+           },
+           token: {
+                type: DataTypes.STRING,
+                allowNull: true,
            },
       }, {
            instanceMethods: {

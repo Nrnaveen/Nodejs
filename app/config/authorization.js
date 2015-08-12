@@ -12,7 +12,11 @@ exports.requiresLogin = function(req, res, next) {
       next();
 };
 exports.requiresNotLogin = function(req, res, next) {
-      if (req.isAuthenticated() && req.user.role == 'admin') {
+      var urls = ['/login', '/signup', '/forgotpasswd'];
+      if(req.isAuthenticated() && req.user.role == 'admin') {
+           req.logout();
+           res.redirect("/");
+      }else if(req.isAuthenticated() && req.user.role == 'user' && urls.indexOf(req.originalUrl) >= 0) {
            res.redirect("/");
       }
       next();

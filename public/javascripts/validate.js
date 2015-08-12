@@ -37,4 +37,20 @@ $(document).ready(function() {
 			image: { extension: "Please upload image only with extension (jpg|JPEG|jpeg|png)", },
 		},
 	});
+	$("#usernew").validate({
+		rules:{
+			first_name: 'required',
+			last_name: 'required',
+			email: { required: true, email: true, },
+			password: { required: true, minlength: 8, },
+			confirm_password: { required: true, minlength: 8, equalTo: "#password", },
+		},
+		messages:{
+			first_name: 'Please Enter First Name Field',
+			last_name: 'Please Enter Last Name Field',
+			email: { required: "Please Enter email Field", email: "Please Enter Valid Email", },
+			password:{ required: "Please Enter Password Field", minlength: "Your Password Must be Atleast 8 Characters Long", },
+			confirm_password:{ required: "Please Enter Confirm Password Field", minlength: "Your Conform Password Must be Atleast 8 Characters Long", equalTo: "Password and Conform Password does not Match", },
+		},
+	});
 });

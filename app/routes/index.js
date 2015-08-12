@@ -8,7 +8,7 @@ var multipartMiddleware = multipart();
 var router = express.Router();
 
 // GET home page
-router.get('/', index.getHome);
+router.get('/', authorization.requiresNotLogin, index.getHome);
 // login route
 router.route('/login')
 	.get(authorization.requiresNotLogin, index.getLogin)

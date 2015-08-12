@@ -1,0 +1,78 @@
+{% extends "admin/layout/layout.html" %}
+{% block heading %}
+           <section class="content-header">
+                     <h1>Users</h1>
+                     <ol class="breadcrumb">
+                                <li><a href="/admin"><i class="fa fa-dashboard"></i> Home</a></li>
+                                <li class="active">Users</li>
+                     </ol>
+           </section>
+{% endblock %}
+{% block content %}
+           <div class="row">
+                     <div class="col-xs-12">
+                                <div class="box">
+                                          <div class="box-header">
+                                                     <h3 class="box-title">Users</h3>
+                                                     <div class="box-tools">
+                                                               <a class="btn btn-sm btn-success pull-right" href="/admin/users/new">New User</a>
+                                                     </div>
+                                          </div><!-- /.box-header -->
+                                          <div class="box-body table-responsive no-padding">
+                                                     <table class="table table-hover">
+                                                               <tbody>
+                                                                         <tr>
+                                                                                    <th>ID</th>
+                                                                                    <th>First name</th>
+                                                                                    <th>Last name</th>
+                                                                                    <th>Email</th>
+                                                                                    <th>Created</th>
+                                                                                    <th></th>
+                                                                         </tr>
+                                                                         {% if users.length > 0 %}
+                                                                                    {% for user in users %}
+                                                                                              <tr>
+                                                                                                         <td>{{user.id}}</td>
+                                                                                                         <td>{{user.firstname}}</td>
+                                                                                                         <td>{{user.lastname}}</td>
+                                                                                                         <td>{{user.email}}</td>
+                                                                                                         <td>{{user.createdAt | date("dddd, MMMM Do YYYY, h:mm:ss a") }}</td>
+                                                                                                         <td>
+                                                                                                                   <a class="btn btn-flat btn-sm btn-danger" onclick="return confirm('Are you sure?');" href="/admin/users/delete/{{user.id}}">Delete</a> &dot; 
+                                                                                                                   <a class="btn btn-flat btn-sm btn-warning" href="/admin/users/edit/{{user.id}}">Edit</a>
+                                                                                                         </td>
+                                                                                              </tr>
+                                                                                    {% endfor %}
+                                                                         {% else %}
+                                                                                    <tr><td style="text-align:center;color:red" colspan="10">No Result Found</td></tr>
+                                                                         {% endif %}
+                                                               </tbody>
+                                                     </table>
+                                          </div><!-- /.box-body -->
+                                          {% if total > 1 %}
+                                                     <div class="box-footer clearfix">
+                                                               <ul class="pagination pagination-sm no-margin pull-right">
+                                                                         {% if current_page == 0 %}
+                                                                                    <li class="prev disabled"><a href="#">← Previous</a></li>
+                                                                         {% else %}
+                                                                                    <li class="prev"><a href="/admin/users/?page={{current_page-1}}">← Previous</a></li>
+                                                                         {% endif %}
+                                                                         {% for page in pages %}
+                                                                                    {% if page == current_page %}
+                                                                                              <li class="active"><a >{{page+1}}</a></li>
+                                                                                    {% else %}
+                                                                                              <li><a href="/admin/users/?page={{page}}">{{page+1}}</a></li>
+                                                                                    {% endif %}
+                                                                         {% endfor %}
+                                                                         {% if current_page == (total-1) %}
+                                                                                    <li class="next disabled"><a href="#">Next → </a></li>
+                                                                         {% else %}
+                                                                                    <li class="next"><a href="/admin/users/?page={{current_page+1}}">Next → </a></li>
+                                                                         {% endif %}
+                                                               </ul>
+                                                     </div>
+                                          {% endif %}
+                                </div><!-- /.box -->
+                     </div>
+           </div>
+{% endblock %}

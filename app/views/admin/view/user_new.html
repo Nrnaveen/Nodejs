@@ -1,0 +1,56 @@
+{% extends 'super_admin/_layout.html' %}
+{% block heading %}
+	<section class="content-header">
+		<h1>User</h1>
+		<ol class="breadcrumb">
+			<li><a href="/admin"><i class="fa fa-dashboard"></i> Home</a></li>
+			<li><a href="/admin/users">User</a></li>
+			<li class="active">New</li>
+		</ol>
+	</section>
+{% endblock %}
+{% block content %}
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="box box-primary">
+				<div class="box-header">
+					<h3 class="box-title">New User</h3>
+				</div><!-- /.box-header -->
+				<!-- form start -->
+				<form id="usernew" role="form" action="/admin/users/new" method="POST">
+					<div class="box-body">
+						<div class="form-group">
+							<label for="first_name">First name</label>
+							<input type="text" value="{{suser.firstname}}" placeholder="First name" id="firstname" name="firstname" class="form-control" />
+						</div>
+						<div class="form-group">
+							<label for="last_name">Last name</label>
+							<input type="text" value="{{suser.lastname}}" placeholder="Last name" id="lastname" class="form-control" name="lastname" />
+						</div>
+						<div class="form-group">
+							<label for="email">Email</label>
+							<input type="email" value="{{suser.email}}" placeholder="Email address" id="email" class="form-control" name="email" />
+						</div>
+						<div class="form-group">
+							<label for="password">Password</label>
+							<input type="password" value="{{suser.password}}" placeholder="Password" id="password" class="form-control" name="password" />
+						</div>
+						<div class="form-group">
+							<label for="password">Confirm Password</label>
+							<input type="password" value="{{suser.confirm_password}}" placeholder="Confirm password" id="confirm_password" class="form-control" name="confirm_password" />
+						</div>
+					</div><!-- /.box-body -->
+					<div class="box-footer">
+						<button class="btn btn-primary" type="submit">Save</button>
+						<a class="btn btn-default" href="/admin/users">Cancel</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block footer %}
+	<script src="/admin/js/plugins/jqueryvalidate/jquery.validate.js" type="text/javascript"></script>
+	<script src="/admin/js/AdminLTE/validate.js" type="text/javascript"></script>
+{% endblock %}

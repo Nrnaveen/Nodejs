@@ -4,6 +4,7 @@ var validator = require('validator');
 var hbs = require('nodemailer-express-handlebars');
 var moment = require('moment');
 var crypto = require('crypto');
+var lodash = require('lodash');
 var gm = require('gm').subClass({ imageMagick: true });
 var path = require('path');
 var config = require("../config/config");
@@ -36,10 +37,12 @@ exports.postChangepwd = function(req, res) {
                      res.redirect('/admin');
                 });
            } else {
-		      res.redirect('/admin/login');
+		      req.flash('error', "User Not Found");
+                res.redirect('/admin');
            }
 	}).error(function(err) {
-           res.send('Error: token not found');
+           req.flash('error', "User Not Found");
+           res.redirect('/admin');
 	});
 };
 
@@ -54,7 +57,7 @@ exports.postProfile = function(req, res) {
            var originalFilename = path.basename(image.originalFilename, originalExtension);
            var extension = ['.jpg','.jpeg','.png','.JPG'];
            if(extension.indexOf(originalExtension) >= 0) {
-                var upload = path.join(__dirname, '../public/uploads/');
+                var upload = path.join(__dirname, '../../public/uploads/');
                 var file = moment().format("YYYYMMDDHHmmss")+'-' + image.originalFilename;
                 gm(image.path).write( upload + file, function(err) {
                      if (err) {
@@ -67,7 +70,7 @@ exports.postProfile = function(req, res) {
                                 email: req.body.email,
                                 image: file,
                           }, { id: req.user.id }).success(function () {
-                                req.flash('message', 'Profile updated successfully!');
+                                req.flash('success', 'Profile updated successfully!');
                                 res.redirect('/admin/profile');
                           }).error(function(err) {
                                 req.flash('error', err.message);
@@ -92,6 +95,110 @@ exports.postProfile = function(req, res) {
            });
       }
 };
+
+
+exports.getUsers = function(req, res) {
+      limit = 10;
+      page = req.param('page') || 0;
+      offset = page * limit;
+      db.user.count({
+           where: { role: 'user' },
+      }).success(function(count) {
+           var page_count = Math.ceil(count/limit) || 1;
+           pages = lodash.range(page_count);
+           db.user.findAll({
+                limit: limit,
+                offset: offset,
+                where: { role: 'user' }
+           }).success(function(superusers) {
+                return res.render('admin/view/user.html',{ users: superusers, pages: pages, current_page: parseInt(page),total: page_count, });
+           }).error(function(err) {
+                return res.render('admin/view/user.html',{ users: []});
+           });
+      }).error(function(err) {
+           return res.render('admin/view/user.html',{ users: []});
+      });
+};
+
+exports.getDeleteUser = function(req, res) {
+      db.user.find({ where: { id: req.param('id'), role: 'user' } }).success(function(superuser) {
+           if(superuser) {
+                superuser.destroy().then(function() {
+                     req.flash('success', 'User deleted successfully');
+                     return res.redirect('/admin/users');
+                }).catch(function(err) {
+                     req.flash('error', err.message);
+                     return res.redirect('/admin/users');
+                });
+           }
+      }).error(function(err) {
+           req.flash('error', err.message);
+           return res.redirect('/admin/users');
+      });
+}; 
+
+exports.getEditUser = function(req, res) {
+      db.user.find({ where: { id: req.param('id') } }).success(function(row) {
+           if(row) {
+                return res.render('admin/view/user_edit.html',{ row: row });
+           }else{
+                req.flash('error', "User Not Found");
+                res.redirect("/admin");
+           }
+      }).error(function(err) {
+           req.flash('error', err.message);
+           res.redirect("/admin");
+      });
+};
+
+exports.postEditUser = function(req, res) {
+      db.user.update({
+           firstname: req.param("firstname"),
+           lastname: req.param("lastname"),
+      }, { id: req.param('id') }).success(function () {
+           req.flash('success', 'Profile updated successfully!');
+           res.redirect('/admin/users');
+      }).error(function(err) {
+           req.flash('error', err.message);
+           res.redirect('/admin/users');
+      });
+};
+
+exports.getChangePassword = function(req, res) {
+      db.user.find({ where: { id: req.param('id') } }).success(function(row) {
+           if(row) {
+                return res.render('admin/view/resetPassword.html', { title: 'Reset Password', resetPasswordForm: resetForm.resetPassword });
+           }else{
+                req.flash('error', "User Not Found");
+                res.redirect("/admin");
+           }
+      }).error(function(err) {
+           req.flash('error', err.message);
+           res.redirect("/admin");
+      });
+};
+exports.postChangePassword = function(req, res) {
+      var data = req.body;
+      db.user.find({ where: { id: req.param('id') } }).success(function(user) {
+           if (user) {
+                var password = user.encryptPassword(data.password);
+                db.user.update({ password: password, }, { id: req.param('id') }).success(function () {
+                     req.flash('success', 'Your Password Successfully Changed');
+                     res.redirect('/admin/users');
+                }).error(function(err) {
+                     req.flash('error', err.message);
+                     res.redirect('/admin/users');
+                });
+           } else {
+                req.flash('error', "User Not Found");
+                res.redirect('/admin/users');
+           }
+  }).error(function(err) {
+           req.flash('error', "User Not Found");
+           res.redirect('/admin/users');
+  });
+};
+
 
 exports.getSignout = function(req, res) {
       req.logout();
