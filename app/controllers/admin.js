@@ -101,7 +101,6 @@ exports.postProfile = function(req, res) {
       }
 };
 
-
 exports.getUsers = function(req, res) {
       limit = 10;
       page = req.param('page') || 0;

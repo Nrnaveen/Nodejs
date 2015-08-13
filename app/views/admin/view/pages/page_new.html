@@ -1,0 +1,44 @@
+{% extends "admin/layout/layout.html" %}
+{% block heading %}
+	<section class="content-header">
+		<h1>User</h1>
+		<ol class="breadcrumb">
+			<li><a href="/admin"><i class="fa fa-dashboard"></i> Home</a></li>
+			<li><a href="/admin/users">User</a></li>
+			<li class="active">New</li>
+		</ol>
+	</section>
+{% endblock %}
+{% block content %}
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="box box-primary">
+				<div class="box-header">
+					<h3 class="box-title">New User</h3>
+				</div><!-- /.box-header -->
+				<!-- form start -->
+				<form id="usernew" role="form" action="/admin/users/new" method="POST">
+					<div class="box-body">
+						{% for key, item in signupForm.fields %}
+							{{ item.toHTML() | safe }}
+							{% asyncEach item in errors %}
+								{% if item[key] %}
+									{{item[key]}}
+								{% endif %}
+							{% endeach %}
+						{% endfor %}
+					</div><!-- /.box-body -->
+					<div class="box-footer">
+						<button class="btn btn-primary" type="submit">Save</button>
+						<a class="btn btn-default" href="/admin/users">Cancel</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block footer %}
+	<script src="/javascripts/jqueryvalidate/jquery.validate.js" type="text/javascript"></script>
+	<script src="/javascripts/AdminLTE/validate.js" type="text/javascript"></script>
+{% endblock %}

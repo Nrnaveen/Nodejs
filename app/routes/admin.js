@@ -2,6 +2,7 @@ var express = require('express');
 var authorization = require('../config/authorization');
 var passport = require('../config/passport');
 var admin = require('../controllers/admin');
+var pages = require('../controllers/pages');
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart();
 var router = express.Router();
@@ -43,6 +44,10 @@ router.route("/users/new")
 	.get(authorization.requiresAdminLogin, admin.getNewUser)
 	.post(authorization.requiresAdminLogin, admin.postNewUser);
 
+// pages
+router.get('/pages', authorization.requiresAdminLogin, pages.getPages);
+
+// logout
 router.route('/logout').get(admin.getSignout);
 
 module.exports = router;
