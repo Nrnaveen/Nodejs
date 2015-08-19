@@ -14,20 +14,20 @@ var db = require('../config/sequelize');
 
 exports.getAdmin = function(req, res, next) {
       db.user.count({ where: { role: 'user' } }).success(function(user_count) {
-           res.render('admin/view/index.html', { title: config.app.name, user_count: user_count });
+           return res.render('admin/view/index.html', { title: config.app.name, user_count: user_count });
       }).error(function(err) {
-           res.render('admin/view/index.html', { title: config.app.name, user_count: 0 });
+           return res.render('admin/view/index.html', { title: config.app.name, user_count: 0 });
       });
 };
 exports.getLogin = function(req, res, next) {
-	 res.render('admin/view/login.html', { title: config.app.name+' - Login' });
+	 return res.render('admin/view/login.html', { title: config.app.name+' - Login' });
 };
 exports.postLogin = function(req,res) {
 	 req.flash('success', 'You Are Logged In Successfully');
-      res.redirect('/admin');
+      return res.redirect('/admin');
 };
 exports.getChangepwd = function(req, res) {
-	res.render('admin/view/resetPassword.html', { title: 'Reset Password', resetPasswordForm: resetForm.resetPassword });
+	return res.render('admin/view/resetPassword.html', { title: 'Reset Password', resetPasswordForm: resetForm.resetPassword });
 };
 exports.postChangepwd = function(req, res) {
      	var data = req.body;
@@ -36,23 +36,23 @@ exports.postChangepwd = function(req, res) {
                 var password = user.encryptPassword(data.password);
                 db.user.update({ password: password, }, { id: req.user.id }).success(function () {
                      req.flash('success', 'Your Password Successfully Changed');
-                     res.redirect('/admin');
+                     return res.redirect('/admin');
                 }).error(function(err) {
                      req.flash('error', err.message);
-                     res.redirect('/admin');
+                     return res.redirect('/admin');
                 });
            } else {
 		      req.flash('error', "User Not Found");
-                res.redirect('/admin');
+                return res.redirect('/admin');
            }
 	}).error(function(err) {
            req.flash('error', "User Not Found");
-           res.redirect('/admin');
+           return res.redirect('/admin');
 	});
 };
 
 exports.getProfile = function(req, res) {
-      res.render('admin/view/profile.html', { title: 'Profile', user: req.user });
+      return res.render('admin/view/profile.html', { title: 'Profile', user: req.user });
 };
 
 exports.postProfile = function(req, res) {
@@ -76,10 +76,10 @@ exports.postProfile = function(req, res) {
                                 image: file,
                           }, { id: req.user.id }).success(function () {
                                 req.flash('success', 'Profile updated successfully!');
-                                res.redirect('/admin/profile');
+                                return res.redirect('/admin/profile');
                           }).error(function(err) {
                                 req.flash('error', err.message);
-                                res.redirect('/admin/profile');
+                                return res.redirect('/admin/profile');
                           });
                      }
                 });
@@ -93,10 +93,10 @@ exports.postProfile = function(req, res) {
                 lastname: req.param("lastname"),
            }, { id: req.user.id }).success(function () {
                 req.flash('success', 'Profile updated successfully!');
-                res.redirect('/admin/profile');
+                return res.redirect('/admin/profile');
            }).error(function (err) {
                 req.flash('error', err.message);
-                res.redirect('/admin/profile');
+                return res.redirect('/admin/profile');
            });
       }
 };
@@ -147,11 +147,11 @@ exports.getEditUser = function(req, res) {
                 return res.render('admin/view/user_edit.html',{ row: row });
            }else{
                 req.flash('error', "User Not Found");
-                res.redirect("/admin");
+                return res.redirect("/admin");
            }
       }).error(function(err) {
            req.flash('error', err.message);
-           res.redirect("/admin");
+           return res.redirect("/admin");
       });
 };
 
@@ -161,10 +161,10 @@ exports.postEditUser = function(req, res) {
            lastname: req.param("lastname"),
       }, { id: req.param('id') }).success(function () {
            req.flash('success', 'Profile updated successfully!');
-           res.redirect('/admin/users');
+           return res.redirect('/admin/users');
       }).error(function(err) {
            req.flash('error', err.message);
-           res.redirect('/admin/users');
+           return res.redirect('/admin/users');
       });
 };
 
@@ -174,11 +174,11 @@ exports.getChangePassword = function(req, res) {
                 return res.render('admin/view/resetPassword.html', { title: 'Reset Password', resetPasswordForm: resetForm.resetPassword });
            }else{
                 req.flash('error', "User Not Found");
-                res.redirect("/admin");
+                return res.redirect("/admin");
            }
       }).error(function(err) {
            req.flash('error', err.message);
-           res.redirect("/admin");
+           return res.redirect("/admin");
       });
 };
 exports.postChangePassword = function(req, res) {
@@ -188,18 +188,18 @@ exports.postChangePassword = function(req, res) {
                 var password = user.encryptPassword(data.password);
                 db.user.update({ password: password, }, { id: req.param('id') }).success(function () {
                      req.flash('success', 'Your Password Successfully Changed');
-                     res.redirect('/admin/users');
+                     return res.redirect('/admin/users');
                 }).error(function(err) {
                      req.flash('error', err.message);
-                     res.redirect('/admin/users');
+                     return res.redirect('/admin/users');
                 });
            } else {
                 req.flash('error', "User Not Found");
-                res.redirect('/admin/users');
+                return res.redirect('/admin/users');
            }
       }).error(function(err) {
            req.flash('error', "User Not Found");
-           res.redirect('/admin/users');
+           return res.redirect('/admin/users');
       });
 };
 
@@ -219,18 +219,18 @@ exports.postNewUser = function(req, res) {
                                 user.password = user.encryptPassword(data.password);
                                 user.save().success(function() {
                                      req.flash("success", "You Are Successfully Registered.");
-                                     res.redirect('/admin/users');
+                                     return res.redirect('/admin/users');
                                 });
                           }else{
                                 req.flash("error", "Email ID is already registered.Please Select another one");
-                                res.redirect('/admin/users');
+                                return res.redirect('/admin/users');
                           }
                      });
                 }
            },
            error: function (form) {
                 req.flash('errors', form.errors);
-                res.render('admin/view/user_new.html', { signupForm: form });
+                return res.render('admin/view/user_new.html', { signupForm: form });
            },
            empty: function (form) {
                 console.log("empty\n");
@@ -242,5 +242,5 @@ exports.postNewUser = function(req, res) {
 exports.getSignout = function(req, res) {
       req.logout();
       req.flash('success', 'You Are Logged Out Successfully');
-      res.redirect('/admin');
+      return res.redirect('/admin');
 };

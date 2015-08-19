@@ -1,13 +1,4 @@
-var underscore = require('underscore');
-var nodemailer = require('nodemailer');
-var validator = require('validator');
-var hbs = require('nodemailer-express-handlebars');
-var moment = require('moment');
-var crypto = require('crypto');
 var lodash = require('lodash');
-var gm = require('gm').subClass({ imageMagick: true });
-var path = require('path');
-var config = require("../config/config");
 var db = require('../config/sequelize');
 
 exports.getPages = function(req, res) {

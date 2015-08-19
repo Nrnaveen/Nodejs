@@ -11,6 +11,7 @@ var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
 var dateFilter = require('nunjucks-date-filter');
 var nunjucksDate = require('nunjucks-date');
+var timeout = require('connect-timeout');
 var passport = require('./passport');
 var routes = require('../routes/index');
 var admin = require('../routes/admin');
@@ -26,7 +27,7 @@ module.exports = function(app, express) {
 	env.addFilter('date', dateFilter);
 	nunjucksDate.install(env);
 	app.set('view engine', 'html');
-
+	
 	app.use(logger('dev'));
 	app.use(bodyParser.json());
 

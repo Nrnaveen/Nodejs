@@ -15,23 +15,28 @@ router.use(function (req, res, next) {
 
 // GET home page
 router.get('/', index.getHome);
+
+// activate account
+router.route('/account/activate/:token').get(authorization.requiresNotLogin, index.getActivate);
+
 // login route
 router.route('/login')
 	.get(authorization.requiresNotLogin, index.getLogin)
-	.post(passport.authenticate('local', {
-		failureRedirect: '/login',
-		failureFlash: 'Invalid username or password.',
-	}), index.postLogin);
+	.post(authorization.requiresNotLogin, index.postLogin);
+
 // signup route
 router.route('/signup')
 	.get(authorization.requiresNotLogin, index.getSignup)
 	.post(index.postSignup);
+
 // logout route
 router.route('/logout').get(index.getSignout);
+
 // forgot password
 router.route('/forgotpasswd')
 	.get(authorization.requiresNotLogin, index.forgotPassword)
 	.post(authorization.requiresNotLogin, index.forgotPasswordEmail);
+
 // reset password
 router.route('/resetpasswd/:token')
 	.get(authorization.requiresNotLogin, index.resetPassword)

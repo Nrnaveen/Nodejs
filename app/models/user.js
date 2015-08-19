@@ -62,8 +62,8 @@ module.exports = function(sequelize, DataTypes) {
                 defaultValue: sequelize.NOW
            },
            active: {
-                type:DataTypes.STRING,
-                defaultValue: '1'
+                type:DataTypes.BOOLEAN,
+                defaultValue: 0,
            },
            role: {
                 type: DataTypes.ENUM,

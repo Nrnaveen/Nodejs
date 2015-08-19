@@ -5,39 +5,39 @@ var config = require("./config");
 
 exports.requiresLogin = function(req, res, next) {
       if (!req.isAuthenticated()) {
-           res.redirect("/login");
+           return res.redirect("/login");
       }else if(req.isAuthenticated() && req.user.role == 'admin') {
-           res.redirect("/login");
+           return res.redirect("/login");
       }
-      next();
+      return next();
 };
 exports.requiresNotLogin = function(req, res, next) {
       if(req.isAuthenticated() && req.user.role == 'user') {
-           res.redirect("/");
+           return res.redirect("/");
       }
-      next();
+      return next();
 };
 exports.requiresAdminLogin = function(req, res, next) {
       if (!req.isAuthenticated()) {
-           res.redirect("/admin/login");
+           return res.redirect("/admin/login");
       }else if(req.isAuthenticated() && req.user.role != 'admin') {
-           res.redirect("/admin/login");
+           return res.redirect("/admin/login");
       }
-      next();
+      return next();
 };
 exports.requiresAdminNotLogin = function(req, res, next) {
       if (req.isAuthenticated() && req.user.role == 'admin') {
-           res.redirect("/admin");
+           return res.redirect("/admin");
       }
-      next();
+      return next();
 };
 /* User authorizations routing middleware */
 exports.user = {
       hasAuthorization: function(req, res, next) {
            if (req.profile.id != req.user.id) {
-                res.redirect("/");
+                return res.redirect("/");
            }
-           next();
+           return next();
       }
 };
 exports.authorize = {
@@ -46,11 +46,11 @@ exports.authorize = {
            if(typeof token != 'undefined') {
                 var decode = jwt.decode(token, config.secret_token);
                 if(decode.exp <= moment().valueOf()) {
-                     res.redirect("/");
+                     return res.redirect("/");
                 }
            }else{
-                res.redirect("/");
+                return res.redirect("/");
            }
-           next();
+           return next();
       }
 };
