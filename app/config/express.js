@@ -1,7 +1,8 @@
 var nunjucks  = require('nunjucks');
 var path = require('path');
-var logger = require('morgan');
+var morgan = require('morgan');
 var bodyParser = require('body-parser');
+var jwt = require('jwt-simple');
 var cookieParser = require('cookie-parser');
 var flash = require('express-flash');
 var expressSession = require('express-session');
@@ -13,11 +14,13 @@ var dateFilter = require('nunjucks-date-filter');
 var nunjucksDate = require('nunjucks-date');
 var timeout = require('connect-timeout');
 var passport = require('./passport');
+var config = require('./config');
 var routes = require('../routes/index');
 var admin = require('../routes/admin');
 var auth = require('../routes/auth');
 var users = require('../routes/users');
 module.exports = function(app, express) {
+
 	var SECRET_KEY = 'Naveenr7+^!-xf)i1agch=^g_0%svl++wjo=z3x!gn%nq7+5mv7m_3h^Naveen';
 	var client = redis.createClient();
 	// view config
@@ -28,7 +31,7 @@ module.exports = function(app, express) {
 	nunjucksDate.install(env);
 	app.set('view engine', 'html');
 	
-	app.use(logger('dev'));
+	app.use(morgan('dev'));
 	app.use(bodyParser.json());
 
 	// upload dir
@@ -49,9 +52,10 @@ module.exports = function(app, express) {
 
 	// routes
 	app.use('/', routes).use('/auth', auth).use('/admin', admin).use('/users', users).use(function(req, res, next) {
-		var err = new Error('Not Found');
-		err.status = 404;
-		next(err);
+		// var err = new Error('Not Found');
+		// err.status = 404;
+		// next(err);
+		return res.render('front/views/error.html', { title: config.app.name });
 	}); // error handlers
 	
 	app.use(errorhandler({ log: errorNotification }));

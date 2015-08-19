@@ -15,11 +15,11 @@ var transporter = config.mail.nodemail;
 transporter.use('compile', hbs(config.mail.options));
 
 exports.getHome = function(req, res, next) {
-      return res.render('front/index.html', { title: config.app.name });
+      return res.render('front/views/index.html', { title: config.app.name });
 };
 
 exports.getLogin = function(req, res, next) {
-      return res.render('front/login.html', { title: config.app.name+' - Login' });
+      return res.render('front/views/login.html', { title: config.app.name+' - Login' });
 };
 
 exports.postLogin = function(req,res, next) {
@@ -65,7 +65,7 @@ exports.getActivate = function(req,res, next) {
 
 exports.getSignup = function(req, res, next) {
       var name = req.query.type;
-      return res.render('front/signup.html', { title: config.app.name+' - Signup', type : name, signupForm: form.signup_form });
+      return res.render('front/views/signup.html', { title: config.app.name+' - Signup', type : name, signupForm: form.signup_form });
 };
 
 exports.postSignup = function(req,res) {
@@ -103,7 +103,7 @@ exports.postSignup = function(req,res) {
            },
            error: function (form) {
                 req.flash('errors', form.errors);
-                return res.render('front/signup.html', { title: config.app.name+' - Signup', signupForm: form });
+                return res.render('front/views/signup.html', { title: config.app.name+' - Signup', signupForm: form });
            },
            empty: function (form) {
                 console.log("empty\n");
@@ -117,7 +117,7 @@ exports.getSignout = function(req, res) {
 };
 
 exports.getForgotPassword = function(req, res) {
-      return res.render('front/forgotPassword.html', { title: 'Forgot Password', message: req.flash('message') });
+      return res.render('front/views/forgotPassword.html', { title: 'Forgot Password', message: req.flash('message') });
 };
 
 exports.postForgotPassword = function(req, res) {
@@ -149,7 +149,7 @@ exports.postForgotPassword = function(req, res) {
                 });
            }
       }).error(function(err) {
-           res.redirect("/");
+           return res.redirect("/");
       });
 };
 
@@ -211,7 +211,7 @@ exports.postResetPassword = function(req, res) {
 };
 
 exports.getChangepwd = function(req, res) {
-      res.render('front/resetPassword.html', { title: 'Reset Password', resetPasswordForm: resetForm.resetPassword });
+      res.render('front/views/resetPassword.html', { title: 'Reset Password', resetPasswordForm: resetForm.resetPassword });
 };
 
 exports.postChangepwd = function(req, res) {
@@ -266,7 +266,7 @@ exports.getMail = function(req,res) {
 };
 
 exports.getFile = function(req, res, next) {
-      return res.render('front/file.html', { title: config.app.name+' - File Upload'});
+      return res.render('front/views/file.html', { title: config.app.name+' - File Upload'});
 };
 
 exports.postFile = function(req, res, next) {
