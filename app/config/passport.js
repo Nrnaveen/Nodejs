@@ -37,7 +37,7 @@ passport.use(new LocalStrategy({ usernameField: 'email', passwordField: 'passwor
       });
 }));
 passport.use('admin', new LocalStrategy({ usernameField: 'email', passwordField: 'password' }, function(email, password, done) {
-      db.user.find({ where: { email: email, role: 'admin' } }).success(function(user) {
+      db.user.find({ where: { email: email, role: 'superadmin' } }).success(function(user) {
            if (!user) {
                 done(null, false, {message: 'Unknown user'});
            } else if (!user.authenticate(password)) {
