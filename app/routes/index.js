@@ -34,13 +34,13 @@ router.route('/logout').get(index.getSignout);
 
 // forgot password
 router.route('/forgotpasswd')
-	.get(authorization.requiresNotLogin, index.forgotPassword)
-	.post(authorization.requiresNotLogin, index.forgotPasswordEmail);
+	.get(authorization.requiresNotLogin, index.getForgotPassword)
+	.post(authorization.requiresNotLogin, index.postForgotPassword);
 
 // reset password
 router.route('/resetpasswd/:token')
-	.get(authorization.requiresNotLogin, index.resetPassword)
-	.post(authorization.requiresNotLogin, index.updateUserPassword);
+	.get(authorization.requiresNotLogin, index.getResetPassword)
+	.post(authorization.requiresNotLogin, index.postResetPassword);
 
 router.route('/changepwd')
 	.get(authorization.requiresLogin, index.getChangepwd)

@@ -10,11 +10,8 @@ var config = require("../config/config");
 var db = require('../config/sequelize');
 var resetForm = require('../forms/resetPassword');
 var form = require('../forms/signup');
-var transporter = config.mail.nodemail;
-
 var passport = require('../config/passport');
-
-
+var transporter = config.mail.nodemail;
 transporter.use('compile', hbs(config.mail.options));
 
 exports.getHome = function(req, res, next) {
@@ -92,6 +89,7 @@ exports.postSignup = function(req,res) {
                                           template: 'welcome', context: { url: config.app.baseUrl, welcomeLink: welcomeLink },
                                      };
                                      transporter.sendMail(mailOptions, function(error, info){
+                                          console.log('Message sent: ' + info.response);
                                           req.flash("success", "You Are Successfully Registered.Please Confirm your mail to Active account.");
                                           return res.redirect('/login');
                                      });
@@ -118,11 +116,11 @@ exports.getSignout = function(req, res) {
       return res.redirect('/');
 };
 
-exports.forgotPassword = function(req, res) {
+exports.getForgotPassword = function(req, res) {
       return res.render('front/forgotPassword.html', { title: 'Forgot Password', message: req.flash('message') });
 };
 
-exports.forgotPasswordEmail = function(req, res) {
+exports.postForgotPassword = function(req, res) {
       var email = req.body.email;
       db.user.find({ where: { email: email, role: 'user' } }).success(function(user) {
            if (!user) {
@@ -144,6 +142,7 @@ exports.forgotPasswordEmail = function(req, res) {
                                 console.log(error);
                            }else{
                                 console.log('Message sent: ' + info.response);
+                                req.flash("success", "We’ve sent you an email containing a link that will allow you to reset your password for the next 24 hours.<br>Please check your spam folder if the email doesn’t appear within a few minutes.");
                                 return res.redirect("/");
                            }
                      });
@@ -154,7 +153,7 @@ exports.forgotPasswordEmail = function(req, res) {
       });
 };
 
-exports.resetPassword = function(req, res) {
+exports.getResetPassword = function(req, res) {
       token = req.param("token");
       var data = req.body;
       db.user.find({ where: { forgotPasswordToken: token } }).success(function(user) {  
@@ -164,14 +163,14 @@ exports.resetPassword = function(req, res) {
                 } else {
                      user.forgotPasswordToken = null;
                      user.save().success(function() {
-                           req.flash('message', 'Token has been Expired');
+                           req.flash('success', 'Token has been Expired');
                            return res.redirect('/login');
                      }).error(function(err) {
                            return res.redirect('/login');
                      });
                 }
            } else {
-                req.flash('message', 'Token Not Found');
+                req.flash('success', 'Token Not Found');
                 return res.redirect('/login');
            }
     }).error(function(err) {
@@ -179,7 +178,7 @@ exports.resetPassword = function(req, res) {
     });
 };
 
-exports.updateUserPassword = function(req, res) {
+exports.postResetPassword = function(req, res) {
       token = req.param("token");
       var data = req.body;
       db.user.find({ where: { forgotPasswordToken: token } }).success(function(user) {  
@@ -188,7 +187,7 @@ exports.updateUserPassword = function(req, res) {
                      user.password = user.encryptPassword(data.password);
                      user.forgotPasswordToken = null;
                      user.save().success(function() {
-                           req.flash('message', 'Your Password Successfully Changed');
+                           req.flash('success', 'Your Password Successfully Changed');
                            return res.redirect('/login');
                      }).error(function(err) {
                            return res.redirect('/login');
@@ -196,14 +195,14 @@ exports.updateUserPassword = function(req, res) {
                 } else {
                      user.forgotPasswordToken = null;
                      user.save().success(function() {
-                           req.flash('message', 'Token has been Expired');
+                           req.flash('success', 'Token has been Expired');
                            return res.redirect('/login');
                      }).error(function(err) {
                            return res.redirect('/login');
                      });
                 }
            } else {
-                req.flash('message', 'Token Not Found');
+                req.flash('success', 'Token Not Found');
                 return res.redirect('/login');
            }
       }).error(function(err) {
@@ -221,10 +220,10 @@ exports.postChangepwd = function(req, res) {
            if (user) {
                 user.password = user.encryptPassword(data.password);
                 user.save().success(function() {
-                     req.flash('message', 'Your Password Successfully Changed');
+                     req.flash('success', 'Your Password Successfully Changed');
                      return res.redirect('/');
                 }).error(function(err) {
-                     req.flash('message', 'User Not Found');
+                     req.flash('success', 'User Not Found');
                      return res.redirect('/');
                 });
            } else {
