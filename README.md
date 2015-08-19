@@ -1,2 +1,2 @@
 # Nodejs
-Nodejs with forms models and controllers
+Nodejs with mysql, forms, models and controllers
