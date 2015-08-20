@@ -85,7 +85,9 @@ module.exports = function(sequelize, DataTypes) {
            image: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                validate: {notEmpty: true}
+                validate: {
+                     notEmpty: true,
+                }
            },
            token: {
                 type: DataTypes.STRING,
@@ -102,5 +104,8 @@ module.exports = function(sequelize, DataTypes) {
                 }
            }
       });
+      // User.sync({ force: false }).then(function () {
+      //      return User.create({ firstname: 'Naveen', lastname: 'Kumar', email: 'nrnaveen0492@gmail.com', password: 'admin123', role: 'superadmin', image: "avatar.png" });
+      // });
       return User;
 };
