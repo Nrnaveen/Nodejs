@@ -63,7 +63,7 @@ passport.use(new GoogleStrategy({
                 create.firstname = profile.name.givenName;
                 create.lastname = profile.name.familyName;
                 create.email = profile.email;
-                create.password = create.encryptPassword(profile.id);
+                create.password = profile.id;
                 create.save().success(function(data) {
                      done(null, data);
                 });
@@ -94,7 +94,7 @@ passport.use(new FacebookStrategy({
                           create.firstname = profile.name.givenName;
                           create.lastname = profile.name.familyName;
                           create.email = email;
-                          create.password = create.encryptPassword(profile.id);
+                          create.password = profile.id;
                           create.facebookId = profile.id;
                           create.save().success(function(data) {
                               done(null, data);
@@ -126,7 +126,7 @@ passport.use(new TwitterStrategy({
                 create.firstname = name;
                 create.lastname = name;
                 create.email = email;
-                create.password = create.encryptPassword(profile.id);
+                create.password = profile.id;
                 create.facebookId = profile.id;
                 create.save().success(function(data) {
                      done(null, data);
@@ -158,7 +158,7 @@ passport.use(new LinkedinStrategy({
                           create.firstname = profile.name.givenName;
                           create.lastname = profile.name.familyName;
                           create.email = email;
-                          create.password = create.encryptPassword(profile.id);
+                          create.password = profile.id;
                           create.facebookId = profile.id;
                           create.save().success(function(data) {
                               done(null, data);
@@ -194,7 +194,7 @@ passport.use(new GitHubStrategy({
                           create.firstname = profile.username;
                           create.lastname = profile.username;
                           create.email = email;
-                          create.password = create.encryptPassword(profile.id);
+                          create.password = profile.id;
                           create.facebookId = profile.id;
                           create.save().success(function(data) {
                               done(null, data);

@@ -82,7 +82,7 @@ exports.postSignup = function(req,res) {
                                 user.provider = 'local';
                                 user.active = 0;
                                 user.token = token;
-                                user.password = user.encryptPassword(data.password);
+                                user.password = data.password;
                                 user.save().success(function() {
                                      var mailOptions = {
                                           from: 'Naveen Kumar <nrnaveen0492@gmail.com>', to: user.email, subject: 'Account was created for you',
@@ -184,7 +184,7 @@ exports.postResetPassword = function(req, res) {
       db.user.find({ where: { forgotPasswordToken: token } }).success(function(user) {  
            if (user) {
                 if(moment() <= moment(user.forgotPasswordReqTime)) {
-                     user.password = user.encryptPassword(data.password);
+                     user.password = data.password;
                      user.forgotPasswordToken = null;
                      user.save().success(function() {
                            req.flash('success', 'Your Password Successfully Changed');
@@ -218,7 +218,7 @@ exports.postChangepwd = function(req, res) {
       var data = req.body;
       db.user.find({ where: { id: req.user.id } }).success(function(user) {
            if (user) {
-                user.password = user.encryptPassword(data.password);
+                user.password = data.password;
                 user.save().success(function() {
                      req.flash('success', 'Your Password Successfully Changed');
                      return res.redirect('/');

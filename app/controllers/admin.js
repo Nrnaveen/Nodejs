@@ -33,7 +33,7 @@ exports.postChangepwd = function(req, res) {
      	var data = req.body;
      db.user.find({ where: { id: req.user.id } }).success(function(user) {
            if (user) {
-                var password = user.encryptPassword(data.password);
+                var password = data.password;
                 db.user.update({ password: password, }, { id: req.user.id }).success(function () {
                      req.flash('success', 'Your Password Successfully Changed');
                      return res.redirect('/admin');
@@ -185,7 +185,7 @@ exports.postChangePassword = function(req, res) {
       var data = req.body;
       db.user.find({ where: { id: req.param('id') } }).success(function(user) {
            if (user) {
-                var password = user.encryptPassword(data.password);
+                var password = data.password;
                 db.user.update({ password: password, }, { id: req.param('id') }).success(function () {
                      req.flash('success', 'Your Password Successfully Changed');
                      return res.redirect('/admin/users');
@@ -216,7 +216,7 @@ exports.postNewUser = function(req, res) {
                                 var user = db.user.build(data);
                                 user.image = 'avatar.png';
                                 user.provider = 'local';
-                                user.password = user.encryptPassword(data.password);
+                                user.password = data.password;
                                 user.save().success(function() {
                                      req.flash("success", "You Are Successfully Registered.");
                                      return res.redirect('/admin/users');

@@ -39,6 +39,14 @@ module.exports = function(sequelize, DataTypes) {
            password: {
                 type: DataTypes.STRING,
                 allowNull: false,
+                set: function(v) {
+                     if(v) {
+                           var salt = bCrypt.genSaltSync(10);
+                           var hash = bCrypt.hashSync(v, salt);
+                           this.setDataValue('password', hash);
+                     }
+                },
+                validate: { notEmpty: true, }
            },
            age: {
                 type: DataTypes.INTEGER,
