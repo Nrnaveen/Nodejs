@@ -21,6 +21,7 @@
     "express-session": "^1.11.3",
     "forms": "^1.1.1",
     "gm": "^1.18.1",
+    "include-all": "^0.1.6",
     "jwt-simple": "0.2.0",
     "lodash": "latest",
     "moment": "^2.10.3",

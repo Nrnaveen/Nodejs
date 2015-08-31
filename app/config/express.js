@@ -13,17 +13,23 @@ var RedisStore = require('connect-redis')(session);
 var dateFilter = require('nunjucks-date-filter');
 var nunjucksDate = require('nunjucks-date');
 var timeout = require('connect-timeout');
+var IncludeAll = require('include-all');
 var passport = require('./passport');
 var config = require('./config');
-var routes = require('../routes/index');
-var admin = require('../routes/admin');
-var auth = require('../routes/auth');
-var users = require('../routes/users');
 module.exports = function(app, express) {
+
+	// var controllers = IncludeAll({ dirname: config.root + '/app/controllers', filter: /(.+Controller)\.js$/, excludeDirs: /^\.(git|svn)$/ });
+	var routes = IncludeAll({ dirname: config.root + '/app/routes', filter: /(.+)\.js$/, excludeDirs: /^\.(git|svn)$/ });
+	
+	// var AppRoutes = routes; Object.defineProperty(global, "AppRoutes", { enumerable: false, configurable: false, writable: false, value: AppRoutes });
 
 	var SECRET_KEY = 'Naveenr7+^!-xf)i1agch=^g_0%svl++wjo=z3x!gn%nq7+5mv7m_3h^Naveen';
 	var client = redis.createClient();
+
+
+
 	// view config
+
 	nunjucksDate.setDefaultFormat('MMMM Do YYYY, h:mm:ss a');
 	app.set('views', path.join(__dirname, '../views'));
 	var env = nunjucks.configure(app.get('views'), { autoescape: true, express: app });
@@ -51,7 +57,7 @@ module.exports = function(app, express) {
 	app.use(passport.session());
 
 	// routes
-	app.use('/', routes).use('/auth', auth).use('/admin', admin).use('/users', users).use(function(req, res, next) {
+	app.use('/', routes.index).use('/auth', routes.auth).use('/admin', routes.admin).use('/users', routes.users).use(function(req, res, next) {
 		// var err = new Error('Not Found');
 		// err.status = 404;
 		// next(err);
@@ -64,4 +70,22 @@ module.exports = function(app, express) {
 		console.log(title+"\n"+str);
 	}
 	process.env.TZ = 'UTC';
+
+	if (app.get('env') === 'development') {
+      		app.use(function(err, req, res, next) {
+           		res.status(err.status || 500);
+           		res.render('error', {
+                			message: err.message,
+                			error: err
+                		});
+                	});
+	} // production error handler
+	// no stacktraces leaked to user
+          app.use(function(err, req, res, next) {
+		res.status(err.status || 500);
+		res.render('error', {
+			message: err.message,
+                		error: {}
+                	});
+	});
 };
