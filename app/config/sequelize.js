@@ -14,8 +14,11 @@ fs.readdirSync("app/models").filter(function(file) {
       db[model.name] = model;
 });
 Object.keys(db).forEach(function(modelName) {
-      if(db[modelName].options.hasOwnProperty('associate')) {
-           db[modelName].options.associate(db);
+      // if(db[modelName].options.hasOwnProperty('associate')) {
+      //      db[modelName].options.associate(db);
+      // }
+      if ("associate" in db[modelName]) {
+           db[modelName].associate(db);
       }
 });
 sequelize.sync({force: false}).complete(function(err){
